@@ -2,12 +2,103 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Password Generator</title>
   </head>
-  <body>
-    <div id="app" class="bg-green-500">Hello everyone</div>
+  <body class="bg-dark text-white">
+    <header class="pt-8">
+      <h1 class="text-lg text-gray-400 text-center">Password Generator</h1>
+    </header>
+    <main class="mx-auto space-y-4 mt-4 max-w-lg px-4">
+      <!-- Random password holder - start -->
+      <div class="bg-dark-lighter p-4 flex justify-between">
+        <p id="password_display"></p>
+        <button class="text-primary" id="copy-button">Copy</button>
+      </div>
+      <!-- Random password holder - end -->
+
+      <!-- Options with Button - start  -->
+      <div class="bg-dark-lighter p-4">
+        <!-- Password length - start -->
+        <div class="flex justify-between mb-1">
+          Character Length
+          <span
+            class="text-primary text-2xl font-bold"
+            id="password_length"
+          ></span>
+        </div>
+        <input
+          type="range"
+          name="length"
+          id="length_slider"
+          max="20"
+          min="1"
+          step="1"
+          class="w-full accent-primary"
+        />
+        <!-- Password length - end -->
+
+        <!-- Checkboxes - start -->
+        <div class="flex flex-col accent-primary space-y-1.5 mt-6">
+          <label for="uppercase" class="flex gap-4">
+            <input
+              type="checkbox"
+              id="uppercase"
+              name="option"
+              data-state-selector="includeUppercase"
+            />
+            Include Uppercase Letters
+          </label>
+          <label for="lowercase" class="flex gap-4">
+            <input
+              type="checkbox"
+              id="lowercase"
+              name="option"
+              data-state-selector="includeLowercase"
+            />
+            Include Lowercase Letters
+          </label>
+          <label for="numbers" class="flex gap-4">
+            <input
+              type="checkbox"
+              id="numbers"
+              name="option"
+              data-state-selector="includeNumbers"
+            />
+            Include Numbers
+          </label>
+          <label for="symbols" class="flex gap-4">
+            <input
+              type="checkbox"
+              id="symbols"
+              name="option"
+              data-state-selector="includeSymbols"
+            />
+            Include Symbols
+          </label>
+        </div>
+        <!-- Checkboxes - end -->
+
+        <!-- Password strength - start -->
+        <div class="bg-dark p-4 mt-5 flex justify-between">
+          <span class="text-gray-400">STRENGTH</span>
+          <div>
+            <span class="mr-2" id="strength-text"></span>
+            <span class="text-secondary" id="strength-drawing">| | |</span>
+          </div>
+        </div>
+        <!-- Password strength - end -->
+
+        <button
+          class="bg-primary text-gray-800 px-4 w-full mt-5 p-4 font-bold flex justify-center gap-3"
+          id="generate-button"
+        >
+          GENERATE <span> &rarr; </span>
+        </button>
+      </div>
+      <!-- Options with Button - end  -->
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
