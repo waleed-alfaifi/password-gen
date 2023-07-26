@@ -13,7 +13,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "b0:c9:da:31:b3:1f:5f:f2:f5:8a:22:6d:20:93:9a:94"
+            - "4b:ba:a0:2d:db:29:2b:c4:31:2b:b9:d4:d7:4e:39:76"
       - run:
           name: Install Ansible
           command: apk add --update ansible
