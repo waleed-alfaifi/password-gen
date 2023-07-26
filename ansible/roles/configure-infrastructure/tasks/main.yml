@@ -1,0 +1,33 @@
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # this the same as apt-get update
+- name: Upgrade packages
+  become: true
+  apt:
+    upgrade: yes # this the same as apt-get upgrade
+- name: Install Node.js
+  become: true
+  apt:
+    name: nodejs
+    state: latest
+- name: Install NPM
+  become: true
+  apt:
+    name: npm
+    state: latest
+- name: Install pm2
+  npm:
+    name: pm2
+    global: yes
+- name: Create web directory
+  file:
+    path: ~/web
+    state: directory
+    mode: 0755
+- name: Copy web files
+  copy:
+    src: files/index.js
+    dest: ~/web/
+- name: Start web server
+  command: pm2 start ~/web/index.js -f

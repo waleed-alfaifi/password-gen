@@ -2,25 +2,28 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-orbs:
-  aws-cli: circleci/aws-cli@4.0.0
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  create_infrastructure:
+  configure_infrastructure:
     description: Deploy the provision.yml CloudFormation template
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.12.0b4-alpine
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "b0:c9:da:31:b3:1f:5f:f2:f5:8a:22:6d:20:93:9a:94"
       - run:
-          name: Create infrastructure
-          command: |
-            aws cloudformation deploy --template-file ./cloudformation/provision.yml --stack-name password-stack-${CIRCLE_BUILD_NUM}
+          name: Install Ansible
+          command: apk add --update ansible
+      - run:
+          name: Run Ansible playbook
+          command: ansible-playbook -i ansible/inventory ansible/main.yml
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   deploy:
     jobs:
-      - create_infrastructure
+      - configure_infrastructure
