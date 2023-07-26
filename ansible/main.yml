@@ -1,5 +1,6 @@
 - name: Setup Web Server
   hosts: servers
+  gether_facts: false
   become: true
   become_method: sudo
   remote_user: ubuntu # this is the user that will be used to connect to the remote server, otherwise it will use the user that is running the playbook
