@@ -5,6 +5,24 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
+  smoke_test:
+    description: Run dummy smoke tests
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: apk add --update curl
+      - run:
+          name: Run smoke tests
+          command: |
+            URL="https://google.com/"
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
+      - store_test_results:
+          path: test-results
   configure_infrastructure:
     description: Deploy the provision.yml CloudFormation template
     docker:
@@ -26,4 +44,5 @@ jobs:
 workflows:
   deploy:
     jobs:
-      - configure_infrastructure
+      # - configure_infrastructure
+      - smoke_test
