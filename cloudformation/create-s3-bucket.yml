@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create an S3 bucket with website hosting enabled and export the bucket id as an output
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket to create
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
+
+Outputs:
+  S3BucketId:
+    Value: !Ref S3Bucket
+    Description: The ID of the S3 bucket created
+    Export:
+      Name: !Sub "${AWS::StackName}-S3BucketId"

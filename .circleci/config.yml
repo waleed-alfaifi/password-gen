@@ -2,47 +2,47 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  # aws cli orb
+  aws-cli: circleci/aws-cli@4.0.0
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  smoke_test:
-    description: Run dummy smoke tests
+  build:
+    description: Build and deploy the app
     docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --update curl
-      - run:
-          name: Run smoke tests
-          command: |
-            URL="https://google.com/"
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
-              return 1
-            fi
-      - store_test_results:
-          path: test-results
-  configure_infrastructure:
-    description: Deploy the provision.yml CloudFormation template
-    docker:
-      - image: python:3.12.0b4-alpine
+      - image: cimg/node:18.16.1
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "4b:ba:a0:2d:db:29:2b:c4:31:2b:b9:d4:d7:4e:39:76"
       - run:
-          name: Install Ansible
-          command: apk add --update ansible
+          name: Install dependencies
+          command: npm install
       - run:
-          name: Run Ansible playbook
-          command: ansible-playbook -i ansible/inventory ansible/main.yml
+          name: Build app
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "dist"
+  create_s3_bucket:
+    description: Create an S3 bucket
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: aws cloudformation deploy \
+          --template-file cloudformation/create-s3-bucket.yml --stack-name create-s3-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+          --parameter-overrides BucketName=bucket-${CIRCLE_WORKFLOW_ID:0:7}
+      - run: aws s3 sync dist/ s3://bucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   deploy:
     jobs:
-      - configure_infrastructure
-      # - smoke_test
+      - build
+      - create_s3_bucket:
+          requires:
+            - build
