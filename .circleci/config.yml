@@ -44,5 +44,5 @@ jobs:
 workflows:
   deploy:
     jobs:
-      # - configure_infrastructure
-      - smoke_test
+      - configure_infrastructure
+      # - smoke_test
