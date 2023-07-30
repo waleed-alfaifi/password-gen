@@ -19,7 +19,7 @@ Resources:
       Bucket: !Ref S3Bucket
       PolicyDocument:
         Statement:
-          - Sid: PublicReadGetObject
+          - Sid: PublicReadForGetBucketObjects
             Effect: Allow
             Principal: "*"
             Action: s3:GetObject
