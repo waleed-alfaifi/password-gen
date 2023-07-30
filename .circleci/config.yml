@@ -34,10 +34,7 @@ jobs:
           at: .
       - aws-cli/setup:
           profile_name: circeci
-      - run: |
-          aws cloudformation deploy --template-file cloudformation/create-s3-bucket.yml \ 
-          --stack-name create-s3-bucket-${CIRCLE_WORKFLOW_ID:0:7} \ 
-          --parameter-overrides BucketName=bucket-${CIRCLE_WORKFLOW_ID:0:7}
+      - run: aws cloudformation deploy --template-file cloudformation/create-s3-bucket.yml --stack-name create-s3-bucket-${CIRCLE_WORKFLOW_ID:0:7} --parameter-overrides BucketName=bucket-${CIRCLE_WORKFLOW_ID:0:7}
       - run: aws s3 sync dist/ s3://bucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
   promote_to_production:
     description: Promote the app to production
@@ -48,10 +45,7 @@ jobs:
           at: .
       - aws-cli/setup:
           profile_name: circeci
-      - run: |
-          aws cloudformation deploy --template-file cloudformation/create-cloudfront-distro.yml \ 
-          --stack-name production-distribution \ 
-          --parameter-overrides PipelineID=bucket-${CIRCLE_WORKFLOW_ID:0:7}
+      - run: aws cloudformation deploy --template-file cloudformation/create-cloudfront-distro.yml --stack-name production-distribution --parameter-overrides PipelineID=bucket-${CIRCLE_WORKFLOW_ID:0:7}
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
