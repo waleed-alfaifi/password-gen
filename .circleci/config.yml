@@ -34,9 +34,7 @@ jobs:
           at: .
       - aws-cli/setup:
           profile_name: circeci
-      - run: aws cloudformation deploy \
-          --template-file cloudformation/create-s3-bucket.yml --stack-name create-s3-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
-          --parameter-overrides BucketName=bucket-${CIRCLE_WORKFLOW_ID:0:7}
+      - run: aws cloudformation deploy --template-file cloudformation/create-s3-bucket.yml --stack-name create-s3-bucket-${CIRCLE_WORKFLOW_ID:0:7} --parameter-overrides BucketName=bucket-${CIRCLE_WORKFLOW_ID:0:7}
       - run: aws s3 sync dist/ s3://bucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
 
 # Orchestrate jobs using workflows
